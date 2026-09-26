@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>更新</title>
+<style>
+  :root { --bg: #ffffff; --fg: #37352f; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #191919; --fg: #d4d4d4; } }
+  body { margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center;
+         background: var(--bg); color: var(--fg); font: 16px/1.6 -apple-system, "Hiragino Sans", sans-serif; }
+  p { padding: 0 16px; text-align: center; }
+  a { color: inherit; display: block; margin-top: 8px; }
+</style>
+</head>
+<body>
+<p id="m">送信中…</p>
+<script>
+  // Notion の「更新」リンクから開かれる。合図を ntfy に送り、すぐ Notion のそのページへ戻す。
+  // 例: ?p=<ハイフンなしのページID>   戻り先を試すとき: &back=web（既定は app）
+  const TOPIC = "shirabemono-7520456a89d244789cf0d3ac";
+  const q = new URLSearchParams(location.search);
+  const p = (q.get("p") || "").toLowerCase();
+  const m = document.getElementById("m");
+  if (!/^[0-9a-f]{32}$/.test(p)) {
+    m.textContent = "リンクが正しくありません";
+  } else {
+    const back = q.get("back") === "web" ? "https://www.notion.so/" + p : "notion://www.notion.so/" + p;
+    fetch("https://ntfy.sh/" + TOPIC + "/publish?message=page-" + p)
+      .then(r => {
+        if (!r.ok) throw new Error(r.status);
+        m.textContent = "受け付けました";
+        const a = document.createElement("a");
+        a.href = back;
+        a.textContent = "Notion に戻る";
+        m.appendChild(a);
+        location.replace(back);
+      })
+      .catch(() => { m.textContent = "送信できませんでした。もう一度押してください"; });
+  }
+</script>
+</body>
+</html>
