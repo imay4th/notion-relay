@@ -41,6 +41,12 @@
         a.href = back;
         a.textContent = "Notion に戻る";
         m.appendChild(a);
+        // 開いたタブをブラウザに残さない（2026-09-28 本人要望）。Notion へ切り替わって裏に回った時点で閉じる。
+        // タイマーで閉じないのは、「別のアプリを開く」の確認で Allow を押す前に閉じると戻れなくなるため（Cancel なら表示が残り、上のリンクで戻れる）。
+        // スクリプトが閉じられるのは履歴 1 件のタブだけ（HTML 仕様の script-closable）。location.replace なので履歴は増えない。閉じられないブラウザでは何も起きない
+        document.addEventListener("visibilitychange", () => {
+          if (document.visibilityState === "hidden") window.close();
+        });
         location.replace(back);
       })
       .catch(() => { m.textContent = "送信できませんでした。もう一度押してください"; });
