@@ -19,11 +19,12 @@
 <script>
   // Notion の「更新」リンクから開かれる。合図を ntfy に送り、すぐ Notion のそのページへ戻す。
   // 例: ?p=<ハイフンなしのページID>   戻り先を試すとき: &back=web（既定は app）
-  // 宛先: t なし＝調べ物（既存リンクとの互換のため既定）、t=artifact＝Artifact (from AI)
+  // 宛先: t なし＝調べ物（既存リンクとの互換のため既定）、t=artifact＝Artifact (from AI)、t=news＝News収集
   // 知らない t は送らない（宛先を URL で自由に指定させない）
   const TOPICS = {
     "": "shirabemono-7520456a89d244789cf0d3ac",
     "artifact": "notion-artifact-efa5eb9227f44e188526813f",
+    "news": "news-e36a5664875c59628ffbfba6",
   };
   const q = new URLSearchParams(location.search);
   const p = (q.get("p") || "").toLowerCase();
